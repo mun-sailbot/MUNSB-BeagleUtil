@@ -1,7 +1,3 @@
-/*
-Daniel Cook 2013
-daniel@daniel-cook.net
-*/
 
 #include "GPIO.h"
 

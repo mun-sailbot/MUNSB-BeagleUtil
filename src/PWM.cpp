@@ -1,8 +1,3 @@
-/*
-Daniel Cook 2013
-daniel@daniel-cook.net
-*/
-
 #include "PWM.h"
 
 namespace BeagleUtil
@@ -14,20 +9,18 @@ namespace BeagleUtil
 
         fout1.open("/sys/devices/platform/ocp/ocp\:P9_42_pinmux/state", std::ios::out);
         fout2.open("/sys/devices/platform/ocp/ocp\:P9_14_pinmux/state", std::ios::out);
+        //set gpio pins
+        //set gpio pins
 
         fout1 << 'pwm';
         fout2 << 'pwm';
         fout3 << 'gpio';
-        fout4 << 'gpio';
-        fout5 << 1;
-        fout6 << 1;
+        fout4 << 'gpio';;
 
         fout1.close();
         fout2.close();
-        fout3.close();
-        fout4.close();
-        fout5.close();
-        fout6.close();
+        //fout3.close();
+        //fout4.close();
 
         _path = path;
         _dutyPercent = 0;

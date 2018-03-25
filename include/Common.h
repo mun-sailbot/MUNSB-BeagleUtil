@@ -1,7 +1,4 @@
-/*
-Daniel Cook 2013
-daniel@daniel-cook.net
-*/
+
 
 #ifndef __COMMON_H
 #define __COMMON_H
