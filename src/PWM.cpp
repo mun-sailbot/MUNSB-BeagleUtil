@@ -1,7 +1,13 @@
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <poll.h>
 #include "PWM.h"
 
-PWM::PWM(){
+    PWM::PWM(){
         _dutyPercent = 0;
     }
 
@@ -11,47 +17,47 @@ PWM::PWM(){
         switch (pin) {
             case P9_42:
                 _path = PWM_P9_42;
-                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P9_42_pinmux/state","pwm");
+                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P9_42_pinmux/state");
                 break;
             case P9_22:
                 _path = PWM_P9_22;
-                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P9_22_pinmux/state","pwm");
+                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P9_22_pinmux/state");
                 break;
             case P9_21:
                 _path = PWM_P9_21;
-                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P9_21_pinmux/state","pwm");
+                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P9_21_pinmux/state");
                 break;
             case P9_14:
                 _path = PWM_P9_14;
-                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P9_14_pinmux/state","pwm");
+                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P9_14_pinmux/state");
                 break;
             case P8_36:
                 _path = PWM_P8_36;
-                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_36_pinmux/state","pwm");
+                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_36_pinmux/state");
                 break;
             case P9_16:
                 _path = PWM_P9_16;
-                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P9_16_pinmux/state","pwm");
+                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P9_16_pinmux/state");
                 break;
             case P8_34:
                 _path = PWM_P8_34;
-                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_34_pinmux/state","pwm");
+                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_34_pinmux/state");
                 break;
             case P8_19:
                 _path = PWM_P8_19;
-                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_19_pinmux/state","pwm");
+                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_19_pinmux/state");
                 break;
             case P8_45:
                 _path = PWM_P8_45;
-                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_45_pinmux/state","pwm");
+                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_45_pinmux/state");
                 break;
             case P8_13:
                 _path = PWM_P8_13;
-                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_13_pinmux/state","pwm");
+                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_13_pinmux/state");
                 break;
             case P8_46:
                 _path = PWM_P8_46;
-                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_46_pinmux/state","pwm");
+                gpio_omap_mux_setup("/sys/devices/platform/ocp/ocp\\:P8_46_pinmux/state");
                 break;
             default:
                 break;
@@ -85,8 +91,8 @@ PWM::PWM(){
             std::ofstream fout;
             fout.open(std::string(_path+"/export").c_str(), std::ios::out);
 
-            fout << 1;
-
+            fout << 0;
+            
             fout.close();
 
             return true;
@@ -165,16 +171,25 @@ PWM::PWM(){
             return false;
     }
 
-    int PWM::gpio_omap_mux_setup(const char *omap_pin0_name, const char *mode){
+    int PWM::gpio_omap_mux_setup(const char* omap_pin_name){
         int fd;
-        char buf[80];
-        snprintf(buf, sizeof(buf), SYSFS_OMAP_MUX_DIR "%s" "%s", omap_pin0_name, OMAP_SUFFIX);
-        fd = open(buf, O_WRONLY);
-        if (fd < 0) {
+        const char *mode = "pwm";
+        const char* prefix = "/sys/devices/platform/ocp/ocp:";
+        const char* suffix = "_pinmux/state";
+        const char* p = new char [strlen(prefix)+strlen(omap_pin_name)+strlen(suffix)+5];
+        const char* s = new char [strlen(prefix)+strlen(omap_pin_name)+strlen(suffix)+5];
+        strcat(const_cast<char*>(p),prefix);
+        strcat(const_cast<char*>(p),omap_pin_name);
+        strcat(const_cast<char*>(p),suffix);
+        strcpy(const_cast<char*>(s),p);
+        cout << s << endl;
+        fd = open(s, O_WRONLY);
+        if (fd < 0){
             perror("failed to open OMAP_MUX");
-            return fd;
+                    return fd;
         }
         write(fd, mode, strlen(mode) + 1);
         close(fd);
         return 0;
     }
+    
