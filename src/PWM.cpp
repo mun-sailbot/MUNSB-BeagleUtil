@@ -1,7 +1,7 @@
 
 #include "PWM.h"
 
-    PWM::PWM(){
+PWM::PWM(){
         _dutyPercent = 0;
     }
 
