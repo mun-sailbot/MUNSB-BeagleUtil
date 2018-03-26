@@ -1,14 +1,15 @@
 
 #include "GPIO.h"
 
-namespace BeagleUtil
-{
+    GPIO::GPIO() {
+        
+    }
 
     GPIO::GPIO(std::string path){
         _path = path;
     }
 
-    void GPIO::exportPin(unsigned int pin){
+    void GPIO::exportPin(std::string pin){
         std::ofstream fout;
         fout.open(std::string(_path+"/export").c_str(), std::ios::out);
 
@@ -17,7 +18,7 @@ namespace BeagleUtil
         fout.close();
     }
 
-    void GPIO::unexportPin(unsigned int pin){
+    void GPIO::unexportPin(std::string pin){
         std::ofstream fout;
         fout.open(std::string(_path+"/unexport").c_str(), std::ios::out);
 
@@ -26,7 +27,7 @@ namespace BeagleUtil
         fout.close();
     }
 
-    void GPIO::setPinDirection(unsigned int pin, std::string dir){
+    void GPIO::setPinDirection(std::string pin, std::string dir){
         std::ofstream fout;
         std::stringstream ss;
         ss << _path+"/gpio" << pin << "/direction";
@@ -37,7 +38,7 @@ namespace BeagleUtil
         fout.close();
     }
 
-    void GPIO::setPinValue(unsigned int pin, unsigned int value){
+    void GPIO::setPinValue(std::string pin, unsigned int value){
         std::ofstream fout;
         std::stringstream ss;
         ss << _path+"/gpio" << pin << "/value";
@@ -48,7 +49,7 @@ namespace BeagleUtil
         fout.close();
     }
 
-    unsigned int GPIO::getPinValue(unsigned int pin){
+unsigned int GPIO::getPinValue(std::string pin){
         std::ifstream fin;
         std::stringstream ss;
         ss << _path+"/gpio" << pin << "/value";
@@ -62,10 +63,10 @@ namespace BeagleUtil
         return val;
     }
 
-    int gpio_omap_mux_setup(const char *omap_pin0_name, const char *mode){
+    int GPIO::gpio_omap_mux_setup(const char *omap_pin0_name, const char *mode){
         int fd;
         char buf[MAX_BUF];
-        snprintf(buf, sizeof(buf), SYSFS_OMAP_MUX_DIR "%s", omap_pin0_name);
+        snprintf(buf, sizeof(buf), SYSFS_OMAP_MUX_DIR "%s" "%s", omap_pin0_name, OMAP_SUFFIX);
         fd = open(buf, O_WRONLY);
         if (fd < 0) {
             perror("failed to open OMAP_MUX");
@@ -76,4 +77,3 @@ namespace BeagleUtil
         return 0;
     }
 
-}
