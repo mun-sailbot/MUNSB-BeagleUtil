@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+chgrp -R dialout /sys/class/gpio
+chmod -R g+rw /sys/class/gpio
+chgrp -R dialout /sys/class/pwm
+chmod -R g+rw /sys/class/pwm
+chgrp -R dialout /sys/class/uart
+chmod -R g+rw /sys/class/uart
